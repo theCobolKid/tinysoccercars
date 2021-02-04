@@ -5,8 +5,6 @@ namespace SpriteKind {
 }
 
 
-
-
 // User input (vehicle has inertia, not using moveSprite)
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (modeSelected == true) {
@@ -429,27 +427,27 @@ function setupField() {
     `, SpriteKind.Surface)
     rightGoalLine.setPosition(226, 73)
     leftBallShadow = sprites.create(img`
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . 3 3 3 3 . . . . . . . . .
-        . . 3 3 3 3 3 3 . . . . . . . . .
-        . 3 3 3 3 3 3 3 . . . . . . . . .
-        3 3 3 3 3 3 3 . . . . . . . . . .
-        3 3 3 3 3 3 3 . . . . . . . . . .
-        3 3 3 3 3 3 3 . . . . . . . . . .
-        . 3 3 3 3 3 . . . . . . . . . . .
-        . . 3 3 3 3 . . . . . . . . . . .
-        . . . . 3 3 . . . . . . . . . . .
+        .................
+        .................
+        .................
+        .................
+        .................
+        .................
+        .................
+        .................
+        .................
+        .................
+        .................
+        .................
+        ....3333.........
+        ..333333.........
+        .3333333.........
+        3333333..........
+        3333333..........
+        3333333..........
+        .33333...........
+        ..3333...........
+        ....33...........
     `, SpriteKind.toBeHit)
     rightBallShadow = sprites.create(img`
         . . . . . . . . . . . . . . . . .
@@ -1521,6 +1519,9 @@ function setupCars() {
 
 // Ball physics
 function letBallBounce() {
+    ballShadow.x |= 0;
+    ballShadow.y |= 0;
+
     leftBallShadow.setPosition(ballShadow.x, ballShadow.y)
     rightBallShadow.setPosition(ballShadow.x, ballShadow.y)
     if (ballShadow.top < 14) {
@@ -1533,9 +1534,13 @@ function letBallBounce() {
     }
     if (ballZStats.y > 0) {
         carHitBallInProgress = false
-        ballZStats.y = 0 + 1 - ballZStats.y
-        ballZStats.vy = ballZStats.vy * ballBounceFactor
+        ballZStats.y = (0 + 1 - (ballZStats.y))
+        ballZStats.vy = (ballZStats.vy * ballBounceFactor)
     }
+    ballZStats.vx |= 0;
+    ballZStats.vy |= 0;
+    ballZStats.x |= 0;
+    ballZStats.y |= 0;
     ball.setPosition(ballShadow.x, ballShadow.y - 1 + ballZStats.y)
     if (ballShadow.overlapsWith(leftWall)) {
         while (ballShadow.overlapsWith(leftWall)) {
