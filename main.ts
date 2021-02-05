@@ -5,8 +5,6 @@ namespace SpriteKind {
 }
 
 
-
-
 // User input (vehicle has inertia, not using moveSprite)
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (modeSelected == true) {
@@ -429,27 +427,27 @@ function setupField() {
     `, SpriteKind.Surface)
     rightGoalLine.setPosition(226, 73)
     leftBallShadow = sprites.create(img`
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . . . . . . . . . . . . . .
-        . . . . 3 3 3 3 . . . . . . . . .
-        . . 3 3 3 3 3 3 . . . . . . . . .
-        . 3 3 3 3 3 3 3 . . . . . . . . .
-        3 3 3 3 3 3 3 . . . . . . . . . .
-        3 3 3 3 3 3 3 . . . . . . . . . .
-        3 3 3 3 3 3 3 . . . . . . . . . .
-        . 3 3 3 3 3 . . . . . . . . . . .
-        . . 3 3 3 3 . . . . . . . . . . .
-        . . . . 3 3 . . . . . . . . . . .
+        .................
+        .................
+        .................
+        .................
+        .................
+        .................
+        .................
+        .................
+        .................
+        .................
+        .................
+        .................
+        ....3333.........
+        ..333333.........
+        .3333333.........
+        3333333..........
+        3333333..........
+        3333333..........
+        .33333...........
+        ..3333...........
+        ....33...........
     `, SpriteKind.toBeHit)
     rightBallShadow = sprites.create(img`
         . . . . . . . . . . . . . . . . .
@@ -937,9 +935,9 @@ function updateClock() {
     clockMinutesImage.setImage(scoreBoardNumbers[minutesRemaining])
     clockSecondsTensPlaceImage.setImage(scoreBoardNumbers[Math.floor((gameClock - minutesRemaining * 60) * 0.1) % 10])
     clockSecondsOnesPlaceImage.setImage(scoreBoardNumbers[gameClock % 10])
-    clockMinutesImage.setPosition(74, 8)
-    clockSecondsTensPlaceImage.setPosition(80, 8)
-    clockSecondsOnesPlaceImage.setPosition(84, 8)
+    clockMinutesImage.setPosition(75, 9)
+    clockSecondsTensPlaceImage.setPosition(81, 9)
+    clockSecondsOnesPlaceImage.setPosition(85, 9)
 }
 
 function setConstants() {
@@ -1094,7 +1092,7 @@ function setupScoreboard () {
         . . . . . . . . . . . . . . . .
     `, SpriteKind.text)
     redBoostMeter.setImage(redBoostMeterImages[redScore])
-    redBoostMeter.setPosition(79, 14)
+    redBoostMeter.setPosition(80, 14)
     redScore = 0
     redScoreImageOnesPlace = sprites.create(img`
         . . . . . . . . . . . . . . . .
@@ -1241,7 +1239,7 @@ function setupScoreboard () {
         . . . . . . . . . . . . . . . .
     `, SpriteKind.text)
     blueBoostMeter.setImage(blueBoostMeterImages[blueScore])
-    blueBoostMeter.setPosition(79, 17)
+    blueBoostMeter.setPosition(80, 17)
     gameClock = 180
     runGameClock = false
     clockMinutesImage = sprites.create(img`
@@ -1523,19 +1521,23 @@ function setupCars() {
 function letBallBounce() {
     leftBallShadow.setPosition(ballShadow.x, ballShadow.y)
     rightBallShadow.setPosition(ballShadow.x, ballShadow.y)
-    if (ballShadow.top < 14) {
+    if ((ballShadow.top | 0) < 14) {
         ballShadow.top = 14 + 14 - ballShadow.top
         ballShadow.vy = ballShadow.vy * ballBounceFactor
     }
-    if (ballShadow.bottom > 124) {
+    if ((ballShadow.bottom | 0) > 124) {
         ballShadow.bottom = 124 + 124 - ballShadow.bottom
         ballShadow.vy = ballShadow.vy * ballBounceFactor
     }
-    if (ballZStats.y > 0) {
+    if ((ballZStats.y | 0) > 0) {
         carHitBallInProgress = false
         ballZStats.y = 0 + 1 - ballZStats.y
         ballZStats.vy = ballZStats.vy * ballBounceFactor
     }
+    ballZStats.vx |= 0;
+    ballZStats.vy |= 0;
+    ballZStats.x |= 0;
+    ballZStats.y |= 0;
     ball.setPosition(ballShadow.x, ballShadow.y - 1 + ballZStats.y)
     if (ballShadow.overlapsWith(leftWall)) {
         while (ballShadow.overlapsWith(leftWall)) {
@@ -1684,7 +1686,7 @@ function checkForJump() {
 
 function checkForBallHit() {
     tempHitHeight = ball.bottom - car.bottom
-    tempHitZIndex = Math.min(zHitFactor.length - 1, Math.max(0, ballZStats.y - carZStats.y + 4))
+    tempHitZIndex = Math.min(zHitFactor.length - 1, Math.max(0, ballZStats.y - carZStats.y + 4) | 0)
     if (carShadow.overlapsWith(ballShadow) && car.overlapsWith(ball)) {
         if (carHitBallInProgress == false) {
             carHitBallInProgress = true
@@ -1707,7 +1709,7 @@ function checkForBallHit() {
 
 // Camera
 function placeCamera() {
-    if(carShadow.x != 40 || ballShadow.x != 79) {
+    if(carShadow.x != 40 || ballShadow.x != 80) {
         keepCameraOnBall = false
     }
     if(keepCameraOnBall == false) {
@@ -1870,7 +1872,7 @@ function driveOpponentVehicle() {
 
 function checkOpponentHitBall() {
     tempHitHeight = ball.bottom - opponent.bottom
-    tempHitZIndex = Math.min(zHitFactor.length - 1, Math.max(0, ballZStats.y - opponentZStats.y + 4))
+    tempHitZIndex = Math.min(zHitFactor.length - 1, Math.max(0, ballZStats.y - opponentZStats.y + 4) | 0)
     if (opponentShadow.overlapsWith(ballShadow) && (tempHitHeight < 13 && tempHitHeight > -4)) {
         if (opponentHitBallInProgress == false) {
             opponentHitBallInProgress = true
@@ -2072,21 +2074,21 @@ function checkForGoal() {
 function updateScoreboard() {
     if (redScore >= 10) {
         redScoreImageTensPlace.setImage(scoreBoardNumbers[Math.floor(redScore / 10)])
-        redScoreImageTensPlace.setPosition(65, 8)
+        redScoreImageTensPlace.setPosition(66, 9)
         redScoreImageOnesPlace.setImage(scoreBoardNumbers[redScore % 10])
-        redScoreImageOnesPlace.setPosition(69, 8)
+        redScoreImageOnesPlace.setPosition(70, 9)
     } else {
         redScoreImageOnesPlace.setImage(scoreBoardNumbers[redScore % 10])
-        redScoreImageOnesPlace.setPosition(67, 8)
+        redScoreImageOnesPlace.setPosition(68, 9)
     }
     if (blueScore >= 10) {
         blueScoreImageTensPlace.setImage(scoreBoardNumbers[Math.floor(blueScore / 10)])
-        blueScoreImageTensPlace.setPosition(89, 8)
+        blueScoreImageTensPlace.setPosition(90, 9)
         blueScoreImageOnesPlace.setImage(scoreBoardNumbers[blueScore % 10])
-        blueScoreImageOnesPlace.setPosition(93, 8)
+        blueScoreImageOnesPlace.setPosition(94, 9)
     } else {
         blueScoreImageOnesPlace.setImage(scoreBoardNumbers[blueScore % 10])
-        blueScoreImageOnesPlace.setPosition(91, 8)
+        blueScoreImageOnesPlace.setPosition(92, 9)
     }
 }  
 
@@ -2138,14 +2140,14 @@ function resetAfterGoal () {
         . . c c c c c c c c c c c c c . .
         . . . . c c c c c c c c c . . . .
     `)
-    ballShadow.setPosition(79, 65)
+    ballShadow.setPosition(80, 65)
     ballShadow.setVelocity(0, 0)
     ballZStats.ay = ballGravity
     ballZStats.vy = 0
     ballZStats.setPosition(0, 0)
     ball.setPosition(ballShadow.x, ballShadow.y - 1 + ballZStats.y)
     ball.z = ballShadow.bottom - 3
-    cameraCenterX = 79
+    cameraCenterX = 80
     carImageIndex = 1
     car.setImage(redCarImages[carImageIndex])
     carShadow.setImage(redCarShadowImages[carImageIndex])
