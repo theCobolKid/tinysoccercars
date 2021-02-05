@@ -1519,23 +1519,20 @@ function setupCars() {
 
 // Ball physics
 function letBallBounce() {
-    ballShadow.x |= 0;
-    ballShadow.y |= 0;
-
     leftBallShadow.setPosition(ballShadow.x, ballShadow.y)
     rightBallShadow.setPosition(ballShadow.x, ballShadow.y)
-    if (ballShadow.top < 14) {
+    if ((ballShadow.top | 0) < 14) {
         ballShadow.top = 14 + 14 - ballShadow.top
         ballShadow.vy = ballShadow.vy * ballBounceFactor
     }
-    if (ballShadow.bottom > 124) {
+    if ((ballShadow.bottom | 0) > 124) {
         ballShadow.bottom = 124 + 124 - ballShadow.bottom
         ballShadow.vy = ballShadow.vy * ballBounceFactor
     }
-    if (ballZStats.y > 0) {
+    if ((ballZStats.y | 0) > 0) {
         carHitBallInProgress = false
-        ballZStats.y = (0 + 1 - (ballZStats.y))
-        ballZStats.vy = (ballZStats.vy * ballBounceFactor)
+        ballZStats.y = 0 + 1 - ballZStats.y
+        ballZStats.vy = ballZStats.vy * ballBounceFactor
     }
     ballZStats.vx |= 0;
     ballZStats.vy |= 0;
@@ -1689,7 +1686,7 @@ function checkForJump() {
 
 function checkForBallHit() {
     tempHitHeight = ball.bottom - car.bottom
-    tempHitZIndex = Math.min(zHitFactor.length - 1, Math.max(0, ballZStats.y - carZStats.y + 4))
+    tempHitZIndex = Math.min(zHitFactor.length - 1, Math.max(0, ballZStats.y - carZStats.y + 4) | 0)
     if (carShadow.overlapsWith(ballShadow) && car.overlapsWith(ball)) {
         if (carHitBallInProgress == false) {
             carHitBallInProgress = true
@@ -1875,7 +1872,7 @@ function driveOpponentVehicle() {
 
 function checkOpponentHitBall() {
     tempHitHeight = ball.bottom - opponent.bottom
-    tempHitZIndex = Math.min(zHitFactor.length - 1, Math.max(0, ballZStats.y - opponentZStats.y + 4))
+    tempHitZIndex = Math.min(zHitFactor.length - 1, Math.max(0, ballZStats.y - opponentZStats.y + 4) | 0)
     if (opponentShadow.overlapsWith(ballShadow) && (tempHitHeight < 13 && tempHitHeight > -4)) {
         if (opponentHitBallInProgress == false) {
             opponentHitBallInProgress = true
